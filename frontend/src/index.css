@@ -1,0 +1,550 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+  }
+  #root {
+    height: 100%;
+  }
+  *, *::before, *::after, button, input, select, textarea, optgroup {
+    font-family: inherit;
+  }
+}
+
+@layer utilities {
+  .bg-app {
+    background-color: var(--app-bg);
+  }
+  .bg-app-surface {
+    background-color: var(--app-surface);
+  }
+  .bg-app-muted {
+    background-color: var(--app-surface-muted);
+  }
+  .border-app {
+    border-color: var(--app-border);
+  }
+}
+
+@layer components {
+  .btn-save {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.25rem;
+    color: #fff;
+    background-color: #16a34a;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.08);
+    transition: background-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-save:hover:not(:disabled) {
+    background-color: #15803d;
+  }
+  .btn-save:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* ── Unified blue primary button ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.375rem;
+    border-radius: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #fff;
+    background: linear-gradient(135deg, var(--brand-600) 0%, var(--brand-700) 100%);
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.30);
+    transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+  }
+  .btn-primary:hover:not(:disabled) {
+    background: linear-gradient(135deg, var(--brand-700) 0%, var(--brand-800) 100%);
+    box-shadow: 0 4px 14px rgba(37, 99, 235, 0.38);
+    transform: translateY(-1px);
+  }
+  .btn-primary:active:not(:disabled) {
+    transform: translateY(0px);
+  }
+  .btn-primary:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  /* ── Master Unified Card & List Hover Effect ── */
+  .app-card-hover {
+    transition: background-color 0.15s ease, 
+                border-color 0.15s ease, 
+                box-shadow 0.15s ease !important;
+  }
+  .app-card-hover:hover:not(.border-rose-500):not(.ring-rose-500):not([data-selected="true"]) {
+    background-color: #f1f5f9 !important; /* clean highlighted background without levitation */
+    border-color: #94a3b8 !important; /* refined highlighted border */
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.04) !important;
+    transform: none !important;
+  }
+
+
+  .card {
+    background-color: var(--app-surface);
+    border: 1px solid var(--app-border);
+    border-radius: 1rem;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.06);
+  }
+
+  .card-grid-container {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+  }
+
+
+  /* ── Unified input ── */
+  .input-base {
+    width: 100%;
+    border: 1px solid var(--app-border);
+    border-radius: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    background-color: var(--app-surface);
+    color: var(--text-primary);
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .input-base:focus {
+    border-color: var(--brand-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+  }
+}
+
+:root {
+  --app-font: 'Poppins', 'Inter', sans-serif;
+  --brand-500: #3b82f6;
+  --brand-600: #2563eb;
+  --brand-700: #1d4ed8;
+  --brand-800: #1e40af;
+  --text-primary: #1e293b;
+  --app-bg: #f8fafc;
+  --app-surface: #ffffff;
+  --app-surface-muted: #f1f5f9;
+  --app-border: #e2e8f0;
+}
+
+html, body, #root {
+  height: 100%;
+  min-height: 100%;
+}
+
+body {
+  font-family: var(--app-font);
+  min-height: 100vh;
+  background-color: var(--app-bg);
+  zoom: 0.9;
+}
+
+#root {
+  min-height: 100vh;
+  background: transparent;
+}
+
+
+/* Hide scrollbars but keep scrolling functionality */
+*:not(.notif-scroll) {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+}
+
+*:not(.notif-scroll)::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+  display: none; /* Chrome, Safari, and Opera */
+}
+
+.notif-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #93c5fd transparent;
+}
+
+.notif-scroll::-webkit-scrollbar {
+  width: 6px;
+  display: block;
+}
+
+.notif-scroll::-webkit-scrollbar-thumb {
+  background-color: #93c5fd;
+  border-radius: 999px;
+}
+
+/* Elegant visible scrollbar for list mode containers */
+.app-list-scroll {
+  overflow-y: auto !important;
+  scrollbar-width: thin !important;
+  scrollbar-color: #cbd5e1 #f8fafc !important;
+}
+
+.app-list-scroll::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+  display: block !important;
+}
+
+.app-list-scroll::-webkit-scrollbar-track {
+  background: #f8fafc !important;
+  border-radius: 9999px !important;
+}
+
+.app-list-scroll::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1 !important;
+  border-radius: 9999px !important;
+}
+
+.app-list-scroll::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8 !important;
+}
+
+/* Ensure scrolling still works */
+html, body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+/* Hide scrollbars for specific containers that might have overflow */
+.overflow-y-auto::-webkit-scrollbar {
+  display: none;
+}
+
+.overflow-y-auto {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+/* Custom animations for login/register pages */
+@keyframes fade-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-delayed {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes float-delayed {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes bounce-slow {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes bounce-in {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes shake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  10%, 30%, 50%, 70%, 90% {
+    transform: translateX(-2px);
+  }
+  20%, 40%, 60%, 80% {
+    transform: translateX(2px);
+  }
+}
+
+/* Animation classes */
+.animate-fade-in-left {
+  animation: fade-in-left 0.8s ease-out;
+}
+
+.animate-fade-in-right {
+  animation: fade-in-right 0.8s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.6s ease-out 0.2s both;
+}
+
+.animate-slide-down {
+  animation: slide-down 0.6s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.8s ease-out 0.4s both;
+}
+
+.animate-fade-in-delayed {
+  animation: fade-in-delayed 1s ease-out 0.6s both;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.animate-float-delayed {
+  animation: float-delayed 3s ease-in-out infinite 1s;
+}
+
+.animate-bounce-slow {
+  animation: bounce-slow 2s ease-in-out infinite;
+}
+
+.animate-bounce-in {
+  animation: bounce-in 0.8s ease-out 0.8s both;
+}
+
+.animate-spin-slow {
+  animation: spin-slow 6s linear infinite;
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes indeterminate-bar {
+  0% {
+    transform: translateX(-100%);
+  }
+  50% {
+    transform: translateX(65%);
+  }
+  100% {
+    transform: translateX(240%);
+  }
+}
+
+.animate-indeterminate-bar {
+  width: 45%;
+  animation: indeterminate-bar 1.25s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+/* ========================
+   Compact Page Content Styles
+   Makes all page UI elements smaller
+   ======================== */
+
+/* Main content area - compact mode */
+.page-content {
+  font-size: 0.875rem; /* 14px base instead of 16px */
+  /* Make the UI appear smaller similar to browser zoom (~90%) */
+  zoom: 1;
+  -moz-transform-origin: 0 0;
+  -webkit-transform-origin: 0 0;
+  transform-origin: 0 0;
+  /* Ensure consistent horizontal padding (left == right) */
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+/* Reduce heading sizes in page content */
+.page-content h1 {
+  font-size: 1.5rem; /* 24px instead of 32px */
+}
+
+.page-content h2 {
+  font-size: 1.25rem; /* 20px instead of 24px */
+}
+
+.page-content h3 {
+  font-size: 1.125rem; /* 18px instead of 20px */
+}
+
+.page-content h4, .page-content h5, .page-content h6 {
+  font-size: 1rem; /* 16px */
+}
+
+/* Compact tables */
+.page-content table th,
+.page-content table td {
+  padding: 0.5rem 0.75rem;
+  font-size: 0.8125rem; /* 13px */
+}
+
+/* Compact buttons */
+.page-content button {
+  font-size: 0.8125rem;
+}
+
+/* Compact inputs and form elements */
+.page-content input,
+.page-content select,
+.page-content textarea {
+  font-size: 0.8125rem;
+  padding: 0.375rem 0.625rem;
+}
+
+/* Reduce padding in cards and containers */
+.page-content .p-4 {
+  padding: 0.75rem;
+}
+
+.page-content .p-6 {
+  padding: 1rem;
+}
+
+.page-content .p-8 {
+  padding: 1.25rem;
+}
+
+/* Reduce gap/space utilities */
+.page-content .gap-4 {
+  gap: 0.75rem;
+}
+
+.page-content .gap-6 {
+  gap: 1rem;
+}
+
+.page-content .space-y-4 > * + * {
+  margin-top: 0.75rem;
+}
+
+.page-content .space-y-6 > * + * {
+  margin-top: 1rem;
+}
+
+/* Reduce margins */
+.page-content .mb-4 {
+  margin-bottom: 0.75rem;
+}
+
+.page-content .mb-6 {
+  margin-bottom: 1rem;
+}
+
+.page-content .mt-4 {
+  margin-top: 0.75rem;
+}
+
+.page-content .mt-6 {
+  margin-top: 1rem;
+}
+
+/* Compact text sizes */
+.page-content .text-lg {
+  font-size: 1rem;
+}
+
+.page-content .text-xl {
+  font-size: 1.125rem;
+}
+
+.page-content .text-2xl {
+  font-size: 1.25rem;
+}
+
+.page-content .text-3xl {
+  font-size: 1.5rem;
+}
+
+/* Cancel out the 90% body zoom for navigation menus so they stay at exactly 100% scale */
+.nav-no-zoom {
+  zoom: 1.11111; /* 1 / 0.9 = 1.11111 */
+}

@@ -1,0 +1,8 @@
+GMAIL_USER=vj122604@gmail.com
+GMAIL_APP_PASSWORD=ennx pjgo yzca cyvp
+GMAIL_WEBHOOK_URL=https://script.google.com/macros/s/AKfycbxQcj2VJCYvkAtjTlR1KZ1P889fbDBIQGLoW4RzAIrFeyFq6mHFYXBoPAolpIkTa-o/exec
+
+# Supabase connection string
+DATABASE_URL=postgresql://postgres.ylluxulqxkjircffndxg:bffa9acBiYk9z9s3@aws-0-ap-northeast-1.pooler.supabase.com:5432/postgres
+SUPABASE_URL=https://ylluxulqxkjircffndxg.supabase.co
+SUPABASE_ANON_KEY=sb_secret_vdK4DXtJ6kdObYUOqO3u4A_553J-Rn7
