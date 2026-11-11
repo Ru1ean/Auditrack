@@ -23,10 +23,10 @@ export default function ACCPage() {
   const [events, setEvents] = useState([]);
   const [areasData, setAreasData] = useState([]);
   const [initialLoading, setInitialLoading] = useState(true);
-  
+
   const [selectedEventId, setSelectedEventId] = useState('all');
   const [selectedEvent, setSelectedEvent] = useState(null);
-  
+
   const [selectedOffice, setSelectedOffice] = useState(null);
   const [currentUser, setCurrentUser] = useState(null);
   const [isInspectionOpen, setIsInspectionOpen] = useState(false);
@@ -278,27 +278,24 @@ export default function ACCPage() {
             <button
               type="button"
               onClick={() => setActiveTab('master-list')}
-              className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 cursor-pointer group ${
-                activeTab === 'master-list'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              }`}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 cursor-pointer group ${activeTab === 'master-list'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
             >
               <div
-                className={`p-2 rounded-lg transition-colors ${
-                  activeTab === 'master-list'
-                    ? 'bg-white/20 text-white'
-                    : 'bg-slate-100 text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200'
-                }`}
+                className={`p-2 rounded-lg transition-colors ${activeTab === 'master-list'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-slate-100 text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200'
+                  }`}
               >
                 <Layers className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="truncate font-bold">Accreditation</div>
                 <div
-                  className={`text-[10px] truncate ${
-                    activeTab === 'master-list' ? 'text-blue-100' : 'text-slate-400'
-                  }`}
+                  className={`text-[10px] truncate ${activeTab === 'master-list' ? 'text-blue-100' : 'text-slate-400'
+                    }`}
                 >
                   Areas, Criteria & Reqs
                 </div>
@@ -308,27 +305,24 @@ export default function ACCPage() {
             <button
               type="button"
               onClick={() => setActiveTab('categories')}
-              className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 cursor-pointer group ${
-                activeTab === 'categories'
-                  ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
-                  : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-              }`}
+              className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all flex items-center gap-3 cursor-pointer group ${activeTab === 'categories'
+                ? 'bg-blue-600 text-white shadow-md shadow-blue-500/20'
+                : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
             >
               <div
-                className={`p-2 rounded-lg transition-colors ${
-                  activeTab === 'categories'
-                    ? 'bg-white/20 text-white'
-                    : 'bg-slate-100 text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200'
-                }`}
+                className={`p-2 rounded-lg transition-colors ${activeTab === 'categories'
+                  ? 'bg-white/20 text-white'
+                  : 'bg-slate-100 text-slate-500 group-hover:text-slate-800 group-hover:bg-slate-200'
+                  }`}
               >
                 <LayoutGrid className="h-4 w-4" />
               </div>
               <div className="flex-1 min-w-0">
                 <div className="truncate font-bold">Programs & Offices</div>
                 <div
-                  className={`text-[10px] truncate ${
-                    activeTab === 'categories' ? 'text-blue-100' : 'text-slate-400'
-                  }`}
+                  className={`text-[10px] truncate ${activeTab === 'categories' ? 'text-blue-100' : 'text-slate-400'
+                    }`}
                 >
                   Offices & Programs
                 </div>
