@@ -7,6 +7,7 @@ export default defineConfig({
   server: {
     host: true,
     port: 5273,
+    allowedHosts: ['auditrack.com', '.auditrack.com'],
     proxy: {
       '/api': {
         target: process.env.VITE_BACKEND_PROXY_TARGET || 'http://localhost:5200',
