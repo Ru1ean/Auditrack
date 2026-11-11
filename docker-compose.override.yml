@@ -1,0 +1,66 @@
+# Override file to run and connect the Compliance Audit Backend and Frontend
+# with the self-hosted Supabase stack.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.override.yml up -d
+#   Or register with run.sh:
+#     sh run.sh config add override
+#     sh run.sh start
+
+services:
+  backend:
+    container_name: compliance-backend
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      db:
+        condition: service_healthy
+      api-gw:
+        condition: service_healthy
+    ports:
+      - "${BACKEND_PORT:-5200}:5200"
+    volumes:
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
+    env_file:
+      - ./backend/.env
+    environment:
+      PORT: 5200
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@${POSTGRES_HOST:-db}:${POSTGRES_PORT:-5432}/${POSTGRES_DB:-postgres}
+      DB_SSL: "false"
+      SUPABASE_URL: http://api-gw:8000
+      SUPABASE_PUBLIC_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8200}
+      SUPABASE_ANON_KEY: ${ANON_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SERVICE_ROLE_KEY}
+      FRONTEND_URL: http://localhost:${FRONTEND_PORT:-5273}
+    command: >
+      sh -c "([ -d node_modules/express ] && [ -d node_modules/jsonwebtoken ]) || npm install; npm start"
+
+  frontend:
+    container_name: compliance-frontend
+    image: node:22-alpine
+    restart: unless-stopped
+    working_dir: /app
+    depends_on:
+      - backend
+    ports:
+      - "${FRONTEND_PORT:-5273}:5273"
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
+    env_file:
+      - ./frontend/.env
+    environment:
+      VITE_API_BASE_URL: http://localhost:${BACKEND_PORT:-5200}
+      VITE_BACKEND_PROXY_TARGET: http://backend:5200
+      VITE_SUPABASE_URL: ${SUPABASE_PUBLIC_URL:-http://localhost:8200}
+      VITE_SUPABASE_ANON_KEY: ${ANON_KEY}
+      VITE_SUPABASE_PROFILE_STORAGE: ${SUPABASE_PUBLIC_URL:-http://localhost:8200}/storage/v1/object/public/profile-pics
+    command: >
+      sh -c "[ -d node_modules/vite ] || npm install; npx vite --host 0.0.0.0 --port 5273"
+
+volumes:
+  backend_node_modules:
+  frontend_node_modules:
+
