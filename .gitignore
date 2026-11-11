@@ -14,3 +14,6 @@ test.http
 docker-compose.override.yml
 .supabase-version
 backups
+
+# local secrets
+backend/.envanlocal
