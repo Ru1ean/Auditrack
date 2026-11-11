@@ -22,7 +22,7 @@ const server = http.createServer(app);
 const { initSocket, emitDataChange } = require('./socket');
 const io = initSocket(server);
 app.set('io', io);
-const port = process.env.PORT || 5000;
+const port = process.env.PORT || 5200;
 const cors = require('cors');
 const userRoutes = require('./routes/users');
 const userListRoutes = require('./routes/userlist');
@@ -199,6 +199,8 @@ app.use('/api/event-departments', eventDepartmentsRoutes);
 app.use('/api/personnel-assignments', personnelAssignmentsRoutes);
 // Ensure basic roles exist on startup (Admin, User, Personnel)
 const db = require('./db');
+const { ensureSessionColumn } = require('./utils/sessionManager');
+ensureSessionColumn();
 async function ensureRoles() {
   try {
     const [rows] = await db.query('SELECT "rolename" FROM roles WHERE "rolename" IN (\'Admin\',\'User\',\'Personnel\')');

@@ -101,8 +101,16 @@ export default function Login() {
         }
     }, [navigate]);
 
-    // Show message from previous navigation (e.g., OTP verified)
+    // Show message from previous navigation (e.g., OTP verified or session replaced)
     useEffect(() => {
+        try {
+            const replacedMsg = sessionStorage.getItem('sessionReplacedMessage');
+            if (replacedMsg) {
+                setError(replacedMsg);
+                sessionStorage.removeItem('sessionReplacedMessage');
+            }
+        } catch {}
+
         const msg = location.state?.message || location.state?.successMessage;
         if (msg) {
             setSuccessMessage(msg);
@@ -129,8 +137,14 @@ export default function Login() {
             if (response.success) {
                 localStorage.setItem("token", response.token);
                 localStorage.setItem("user", JSON.stringify(response.user));
+                if (response.sessionId) {
+                    localStorage.setItem("sessionId", response.sessionId);
+                }
 
-                try { localStorage.removeItem('loginBlockedUntil'); } catch (e) {}
+                try {
+                    localStorage.removeItem('loginBlockedUntil');
+                    sessionStorage.removeItem('sessionReplacedMessage');
+                } catch (e) {}
 
                 axios.defaults.headers.common["Authorization"] =
                     `Bearer ${response.token}`;

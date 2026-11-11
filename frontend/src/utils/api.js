@@ -46,8 +46,19 @@ api.interceptors.response.use(
       !originalRequest.url.includes('/login') &&
       !originalRequest.url.includes('/register')
     ) {
+      if (error.response?.data?.code === 'SESSION_REPLACED') {
+        try {
+          sessionStorage.setItem(
+            'sessionReplacedMessage',
+            error.response.data.message ||
+              'Your session has ended because your account was signed in on another device or browser.'
+          );
+        } catch {}
+      }
       localStorage.removeItem('token');
       localStorage.removeItem('user');
+      localStorage.removeItem('sessionId');
+      localStorage.removeItem('name');
       if (window.location.pathname !== '/login') {
         window.location.href = '/login';
       }
@@ -169,6 +180,14 @@ export const usersAPI = {
   login: async (credentials) => {
     loggedInUserCache = { token: null, data: null, timestamp: 0 };
     return (await api.post('/api/user/login', credentials)).data;
+  },
+  logout: async () => {
+    loggedInUserCache = { token: null, data: null, timestamp: 0 };
+    try {
+      return (await api.post('/api/user/logout')).data;
+    } catch {
+      return { success: true };
+    }
   },
   register: async (userData) => (await api.post('/user/register', userData)).data,
   loginStatus: async (email) => (await api.get(`/api/user/login-status?email=${encodeURIComponent(email)}`)).data,
@@ -325,7 +344,7 @@ export const eventsAPI = {
       if (isLocalHost && API_BASE_URL && !API_BASE_URL.includes('localhost')) {
         try {
           const token = localStorage.getItem('token');
-          const localRes = await axios.patch(`http://localhost:5000/api/events/${eventid}/deadline`, { deadline }, {
+          const localRes = await axios.patch(`http://localhost:5200/api/events/${eventid}/deadline`, { deadline }, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
           });
           if (localRes?.data?.success) return localRes.data;
@@ -349,7 +368,7 @@ export const eventsAPI = {
       if (isLocalHost && API_BASE_URL && !API_BASE_URL.includes('localhost')) {
         try {
           const token = localStorage.getItem('token');
-          const localRes = await axios.post(`http://localhost:5000/api/events/${eventid}/remind`, {}, {
+          const localRes = await axios.post(`http://localhost:5200/api/events/${eventid}/remind`, {}, {
             headers: token ? { Authorization: `Bearer ${token}` } : {}
           });
           if (localRes?.data?.success) return localRes.data;

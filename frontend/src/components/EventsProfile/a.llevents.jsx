@@ -104,7 +104,7 @@ const EventsP = forwardRef(({ searchTerm = '', deleteMode = false, onSelectionCh
             console.error('Error deleting events:', error);
             
             if (error.code === 'ERR_NETWORK' || error.message.includes('Network Error')) {
-                return { success: false, message: 'Network error. Please check if the backend server is running on port 5000.' };
+                return { success: false, message: 'Network error. Please check if the backend server is running on port 5200.' };
             }
             
             if (error.response) {

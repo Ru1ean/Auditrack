@@ -1104,8 +1104,18 @@ const downloadEventZip = async (req, res) => {
 
       try {
         if (filepath.startsWith('http://') || filepath.startsWith('https://')) {
+          // Stored URLs may point at an old/public Supabase host (e.g. localhost:8000) that is
+          // unreachable from inside the backend container. Rewrite storage URLs to the
+          // internal Supabase URL so the file can actually be fetched.
+          let fetchUrl = filepath;
+          const storageMarker = '/storage/v1/object/public/';
+          const markerIdx = filepath.indexOf(storageMarker);
+          const internalBase = String(process.env.SUPABASE_URL || '').replace(/\/$/, '');
+          if (markerIdx !== -1 && internalBase && /^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?\//.test(filepath)) {
+            fetchUrl = `${internalBase}${filepath.slice(markerIdx)}`;
+          }
           // Fetch remote file buffer (handles 301/302 redirects automatically)
-          const resp = await axios.get(filepath, { 
+          const resp = await axios.get(fetchUrl, { 
             responseType: 'arraybuffer', 
             timeout: 30000 
           });
@@ -1120,7 +1130,7 @@ const downloadEventZip = async (req, res) => {
           }
         }
       } catch (fileErr) {
-        console.warn(`Skipping file ${file.filename}:`, fileErr.message);
+        console.warn(`Skipping file ${file.filename}:`, fileErr.message || fileErr.code || String(fileErr));
       }
     }
 

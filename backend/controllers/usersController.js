@@ -6,6 +6,8 @@ const loginRateLimiter = require('../middleware/loginRateLimiter');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const { createNotifications } = require('../utils/notificationService');
+const { generateSessionId, setActiveSession, clearActiveSession } = require('../utils/sessionManager');
+const { emitSessionReplaced } = require('../socket');
 const normalizeEmail = (email) => String(email || '').trim().toLowerCase();
 const COMPANY_EMAIL_DOMAIN = '@lccbonline.edu.ph';
 const isCompanyEmail = (email) => normalizeEmail(email).endsWith(COMPANY_EMAIL_DOMAIN);
@@ -964,7 +966,7 @@ exports.createRegistrationInvite = async (req, res) => {
     const token = jwt.sign(payload, INVITE_TOKEN_SECRET, { expiresIn: '10m' });
     const decoded = jwt.decode(token) || {};
     const requestOrigin = req.get('origin');
-    const fallbackFrontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+    const fallbackFrontendUrl = process.env.FRONTEND_URL || 'http://localhost:5273';
     const frontendUrl = String(requestOrigin || fallbackFrontendUrl).replace(/\/$/, '');
     const registerPath = roleid === 4 ? '/register-auditor' : '/register';
     const inviteUrl = `${frontendUrl}${registerPath}?invite=${encodeURIComponent(token)}`;
@@ -1081,11 +1083,17 @@ exports.loginUser = async (req, res) => {
       });
     }
 
+    const sessionId = generateSessionId();
+    await setActiveSession(user.userid, sessionId);
+
     const token = jwt.sign(
-      { userid: user.userid, roleid: user.roleid },
+      { userid: user.userid, roleid: user.roleid, sessionId },
       "MY_SECRET_KEY",
       { expiresIn: "8h" }
     );
+
+    // Immediately notify any previous active browser/device session for this user to log out
+    emitSessionReplaced(user.userid, sessionId);
 
     if (user && user.userid) {
       try { recordLog(user.userid, 'Login', `User ${user.Email} logged in`); } catch (e) {}
@@ -1097,6 +1105,7 @@ exports.loginUser = async (req, res) => {
       success: true,
       message: "Login successful.",
       token,
+      sessionId,
       user,
     });
   } catch (error) {
@@ -1111,7 +1120,9 @@ exports.loginUser = async (req, res) => {
 exports.logoutUser = async (req, res) => {
   try {
     const userid = req.user?.userid || null;
+    const sessionId = req.user?.sessionId || null;
     if (userid) {
+      await clearActiveSession(userid, sessionId);
       try { recordLog(userid, 'Logout', `User ${userid} logged out`); } catch (e) {}
     }
     res.json({ success: true, message: 'Logout successful' });
@@ -1352,7 +1363,7 @@ exports.updateUser = async (req, res) => {
     const nextFirstName = req.body.firstname !== undefined && req.body.firstname !== '' ? req.body.firstname : current.firstname;
     const nextMiddleInitial = req.body.middleinitial !== undefined ? req.body.middleinitial : current.middleinitial;
     const nextLastName = req.body.lastname !== undefined && req.body.lastname !== '' ? req.body.lastname : current.lastname;
-    const nextEmail = req.body.Email || req.body.email || current.Email;
+    const nextEmail = req.body.Email || req.body.email || current.email || current.Email;
     const nextProfilePic = req.file
       ? req.file.filename
       : (req.body.profilepic !== undefined ? req.body.profilepic : current.profilepic);

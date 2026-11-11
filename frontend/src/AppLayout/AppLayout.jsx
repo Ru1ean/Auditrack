@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navigation/navbar';
 import Header from '../components/Header/header';
+import '../utils/socket';
 
 function checkIsAdminUser(user) {
     if (!user) return false;
@@ -21,6 +22,7 @@ function getStoredIsAdmin() {
 }
 
 export default function AppLayout() {
+    const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isAdmin, setIsAdmin] = useState(getStoredIsAdmin);
 
@@ -39,6 +41,10 @@ export default function AppLayout() {
         syncAdminStatus();
 
         const onStorage = (e) => {
+            if (e.key === 'token' && !e.newValue) {
+                navigate('/login', { replace: true });
+                return;
+            }
             if (e.key === 'user') syncAdminStatus();
         };
         const onProfileUpdated = () => syncAdminStatus();

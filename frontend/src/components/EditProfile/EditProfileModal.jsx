@@ -3,8 +3,10 @@ import { X, Loader2 } from "lucide-react";
 import { usersAPI } from "../../utils/api";
 import ImageCropModal from "./ImageCropModal";
 import SmartUserAvatar from "../UI/SmartUserAvatar";
+import { useToast } from "../UI/Toast";
 
 const EditProfileModal = ({ user, isOpen, onClose, onUpdate }) => {
+    const { toast } = useToast();
     const [formData, setFormData] = useState({
         firstname: "",
         middleinitial: "",
@@ -78,12 +80,27 @@ const EditProfileModal = ({ user, isOpen, onClose, onUpdate }) => {
                 onUpdate(response.user);
                 // Emit a custom event to trigger navbar refresh
                 window.dispatchEvent(new Event('profileUpdated'));
+                toast({
+                    title: 'Profile updated',
+                    description: formData.profilepic instanceof File
+                        ? 'Your profile picture and details were updated successfully.'
+                        : 'Your profile details were updated successfully.',
+                    variant: 'success',
+                    duration: 3500,
+                });
                 onClose();
             } else {
                 console.error("Update failed:", response.message);
+                toast({ title: 'Update failed', description: response.message || 'Could not update your profile.', variant: 'error', duration: 4000 });
             }
         } catch (error) {
             console.error("Update error:", error);
+            toast({
+                title: 'Update failed',
+                description: error?.response?.data?.message || 'Could not update your profile. Please try again.',
+                variant: 'error',
+                duration: 4000,
+            });
         } finally {
             setIsSubmitting(false);
         }

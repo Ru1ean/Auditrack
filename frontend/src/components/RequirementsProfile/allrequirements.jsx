@@ -127,7 +127,7 @@ const RequirementsP = forwardRef(
 
         // Check if it's a network error
         if (error.code === 'ERR_NETWORK' || (error.message && error.message.includes('Network Error'))) {
-          return { success: false, message: 'Network error. Please check if the backend server is running on port 5000.' };
+          return { success: false, message: 'Network error. Please check if the backend server is running on port 5200.' };
         }
 
         // Check for specific error responses

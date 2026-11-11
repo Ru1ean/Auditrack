@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const db = require("../db");
+const { isValidSession } = require("../utils/sessionManager");
 
 // Standard JWT Authentication Middleware
 const auth = async function (req, res, next) {
@@ -16,7 +17,18 @@ const auth = async function (req, res, next) {
 
   try {
     const decoded = jwt.verify(token, "MY_SECRET_KEY");
-    req.user = decoded; // Contains userid and roleid if signed with roleid
+
+    // Verify that this token matches the user's single active session
+    const sessionValid = await isValidSession(decoded.userid, decoded.sessionId);
+    if (!sessionValid) {
+      return res.status(401).json({
+        success: false,
+        code: "SESSION_REPLACED",
+        message: "Your session has ended because your account was logged in on another device or browser.",
+      });
+    }
+
+    req.user = decoded; // Contains userid, roleid, and sessionId
 
     // Fallback: If roleid is missing from token payload, fetch from DB
     if (!req.user.roleid && req.user.userid) {

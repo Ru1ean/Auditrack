@@ -88,7 +88,7 @@ router.get('/:requirementid/user-file/:userid', auth, async (req, res) => {
                 filename: file.filename,
                 displayname: file.displayname || file.filename,
                 comment: (req.user && (req.user.roleid === 4 || Number(req.user.roleid) === 4)) ? '' : (file.comment || ''),
-                url: fileUrl.startsWith('http') ? fileUrl : `http://localhost:5000${fileUrl}`,
+                url: fileUrl.startsWith('http') ? fileUrl : `http://localhost:${process.env.PORT || 5200}${fileUrl}`,
                 uploadedat: file.uploadedat,
                 sortorder: file.sortorder ?? 0,
                 reviewstatus: file.reviewstatus || 'pending',
