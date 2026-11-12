@@ -9,7 +9,7 @@
 
 services:
   backend:
-    container_name: compliance-backend
+    container_name: auditrack-backend
     image: node:22-alpine
     restart: unless-stopped
     working_dir: /app
@@ -38,7 +38,7 @@ services:
       sh -c "([ -d node_modules/express ] && [ -d node_modules/jsonwebtoken ]) || npm install; npm start"
 
   frontend:
-    container_name: compliance-frontend
+    container_name: auditrack-frontend
     image: node:22-alpine
     restart: unless-stopped
     working_dir: /app
