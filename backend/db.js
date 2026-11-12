@@ -14,6 +14,7 @@ const isLocal =
   dbUrl.includes('@db:') ||
   dbUrl.includes('@supavisor:') ||
   dbUrl.includes('@supabase-db:') ||
+  dbUrl.includes('@auditrack-supabase-db:') ||
   process.env.DB_SSL === 'false';
 
 const sql = postgres(dbUrl, {

@@ -7,6 +7,7 @@ sources:
     type: docker_logs
     exclude_containers:
       - supabase-vector
+      - auditrack-supabase-vector
 
 transforms:
   project_logs:
@@ -30,13 +31,13 @@ transforms:
     inputs:
       - project_logs
     route:
-      kong: '.appname == "supabase-kong" || .appname == "supabase-envoy"'
-      auth: '.appname == "supabase-auth"'
-      rest: '.appname == "supabase-rest"'
-      realtime: '.appname == "realtime-dev.supabase-realtime"'
-      storage: '.appname == "supabase-storage"'
-      functions: '.appname == "supabase-edge-functions"'
-      db: '.appname == "supabase-db"'
+      kong: '.appname == "supabase-kong" || .appname == "supabase-envoy" || .appname == "auditrack-supabase-kong" || .appname == "auditrack-supabase-envoy"'
+      auth: '.appname == "supabase-auth" || .appname == "auditrack-supabase-auth"'
+      rest: '.appname == "supabase-rest" || .appname == "auditrack-supabase-rest"'
+      realtime: '.appname == "realtime-dev.supabase-realtime" || .appname == "auditrack-realtime-dev.supabase-realtime" || .appname == "auditrack-supabase-realtime"'
+      storage: '.appname == "supabase-storage" || .appname == "auditrack-supabase-storage"'
+      functions: '.appname == "supabase-edge-functions" || .appname == "auditrack-supabase-edge-functions"'
+      db: '.appname == "supabase-db" || .appname == "auditrack-supabase-db"'
   # Ignores non nginx errors since they are related with kong booting up
   kong_logs:
     type: remap

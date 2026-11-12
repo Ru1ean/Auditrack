@@ -10,7 +10,7 @@ export default defineConfig({
     allowedHosts: ['auditrack.com', '.auditrack.com'],
     proxy: {
       '/api': {
-        target: process.env.VITE_BACKEND_PROXY_TARGET || 'http://localhost:5200',
+        target: process.env.VITE_API_BASE_URL,
         changeOrigin: true,
         secure: false,
       },
