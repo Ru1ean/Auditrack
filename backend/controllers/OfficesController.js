@@ -1103,15 +1103,26 @@ const OfficesController = {
           }
         }
 
-        await db.query(`DELETE FROM requirement_user_uploads WHERE requirementid IN (SELECT requirementid FROM compliancestatusoffices WHERE officeid IN (${placeholders}))`, ids);
-        await db.query(`DELETE FROM officeproofdocuments WHERE officeid IN (${placeholders})`, ids);
-        await db.query(`DELETE FROM requirementuserassignments WHERE officeid IN (${placeholders})`, ids);
-        await db.query(`DELETE FROM compliancestatusoffices WHERE officeid IN (${placeholders})`, ids);
-        await db.query(`DELETE FROM officeheadassignments WHERE officeid IN (${placeholders})`, ids);
-        await db.query(`DELETE FROM OverallOfficeStatus WHERE officeid IN (${placeholders})`, ids);
       } catch (e) {
-        console.warn('Cleanup child records warning during bulk office delete:', e.message);
+        console.warn('Cleanup proof files warning during bulk office delete:', e.message);
       }
+
+      const optionalChildDeletes = [
+        `DELETE FROM requirement_user_uploads WHERE requirementid IN (SELECT requirementid FROM compliancestatusoffices WHERE officeid IN (${placeholders}))`,
+        `DELETE FROM OverallOfficeStatus WHERE officeid IN (${placeholders})`,
+      ];
+      for (const sql of optionalChildDeletes) {
+        try {
+          await db.query(sql, ids);
+        } catch (e) {
+          console.warn('Optional child cleanup skipped during bulk office delete:', e.message);
+        }
+      }
+
+      await db.query(`DELETE FROM officeproofdocuments WHERE officeid IN (${placeholders})`, ids);
+      await db.query(`DELETE FROM requirementuserassignments WHERE officeid IN (${placeholders})`, ids);
+      await db.query(`DELETE FROM compliancestatusoffices WHERE officeid IN (${placeholders})`, ids);
+      await db.query(`DELETE FROM officeheadassignments WHERE officeid IN (${placeholders})`, ids);
 
       const [result] = await db.query(`DELETE FROM offices WHERE officeid IN (${placeholders})`, ids);
 
