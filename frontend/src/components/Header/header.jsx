@@ -93,12 +93,19 @@ export default function Header({ onToggleMobileMenu, isAdmin: propIsAdmin }) {
 
   const handleLogout = async () => {
     setShowProfileMenu(false);
-    await usersAPI.logout();
+    const token = localStorage.getItem('token');
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     localStorage.removeItem('sessionId');
     localStorage.removeItem('name');
+    try {
+      sessionStorage.removeItem('sessionReplacedMessage');
+    } catch {}
     delete axios.defaults.headers.common['Authorization'];
+    await usersAPI.logout(token);
+    try {
+      sessionStorage.removeItem('sessionReplacedMessage');
+    } catch {}
     navigate('/login');
   };
 
@@ -125,6 +132,7 @@ export default function Header({ onToggleMobileMenu, isAdmin: propIsAdmin }) {
           },
         });
         if (response.status === 401) {
+          if (!localStorage.getItem('token')) return;
           const errData = await response.json().catch(() => ({}));
           if (errData?.code === 'SESSION_REPLACED') {
             forceLogoutReplacedSession(errData?.message);

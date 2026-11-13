@@ -39,14 +39,16 @@ api.interceptors.response.use(
   },
   (error) => {
     const originalRequest = error.config;
-    // Only redirect if not a login or register request
+    // Only redirect if not a login, register, or logout request
     if (
       (error.response?.status === 401 || error.response?.status === 403) &&
       originalRequest &&
       !originalRequest.url.includes('/login') &&
-      !originalRequest.url.includes('/register')
+      !originalRequest.url.includes('/register') &&
+      !originalRequest.url.includes('/logout')
     ) {
-      if (error.response?.data?.code === 'SESSION_REPLACED') {
+      const hasActiveToken = Boolean(localStorage.getItem('token'));
+      if (hasActiveToken && error.response?.data?.code === 'SESSION_REPLACED') {
         try {
           sessionStorage.setItem(
             'sessionReplacedMessage',
@@ -181,10 +183,17 @@ export const usersAPI = {
     loggedInUserCache = { token: null, data: null, timestamp: 0 };
     return (await api.post('/api/user/login', credentials)).data;
   },
-  logout: async () => {
+  logout: async (explicitToken = null) => {
     loggedInUserCache = { token: null, data: null, timestamp: 0 };
+    const token = explicitToken || localStorage.getItem('token');
     try {
-      return (await api.post('/api/user/logout')).data;
+      return (
+        await api.post(
+          '/api/user/logout',
+          {},
+          token ? { headers: { Authorization: `Bearer ${token}` } } : undefined
+        )
+      ).data;
     } catch {
       return { success: true };
     }

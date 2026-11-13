@@ -103,6 +103,17 @@ export default function Login() {
 
     // Show message from previous navigation (e.g., OTP verified or session replaced)
     useEffect(() => {
+        const msg = location.state?.message || location.state?.successMessage;
+        if (msg) {
+            try {
+                sessionStorage.removeItem('sessionReplacedMessage');
+            } catch {}
+            setError("");
+            setSuccessMessage(msg);
+            navigate(location.pathname, { replace: true, state: null });
+            return;
+        }
+
         try {
             const replacedMsg = sessionStorage.getItem('sessionReplacedMessage');
             if (replacedMsg) {
@@ -110,12 +121,6 @@ export default function Login() {
                 sessionStorage.removeItem('sessionReplacedMessage');
             }
         } catch {}
-
-        const msg = location.state?.message || location.state?.successMessage;
-        if (msg) {
-            setSuccessMessage(msg);
-            navigate(location.pathname, { replace: true, state: null });
-        }
     }, []);
 
     const handleChange = (e) => {

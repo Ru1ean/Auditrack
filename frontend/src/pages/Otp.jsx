@@ -79,6 +79,9 @@ export default function Otp() {
             });
 
             if (response.data.success) {
+                try {
+                    sessionStorage.removeItem('sessionReplacedMessage');
+                } catch {}
                 navigate("/login", {
                     replace: true,
                     state: {
